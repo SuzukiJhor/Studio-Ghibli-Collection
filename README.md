@@ -67,9 +67,13 @@ npm run dev
 npm run test:coverage
 ```
 
+
 ## 🚀 Demo em Produção
 
 > Clique na imagem abaixo para acessar o projeto em produção.
 
-[<img width="1491" height="957" alt="Captura de tela 2026-03-01 140248" src="https://github.com/user-attachments/assets/efe41136-1a90-48a3-9e78-0ce47b99e163" />
-)](https://studio-ghibli-jhordan-suzuki.vercel.app)
+[<img
+  src="https://github.com/user-attachments/assets/efe41136-1a90-48a3-9e78-0ce47b99e163"
+  alt="Preview do Studio Ghibli Collection"
+  width="100%"
+/>](https://studio-ghibli-jhordan-suzuki.vercel.app)
