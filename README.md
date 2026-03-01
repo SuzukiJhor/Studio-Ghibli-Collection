@@ -3,12 +3,12 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![React](https://img.shields.io/badge/React-19-blue.svg)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)](https://www.typescriptlang.org/)
-
+<br>
 > ⚠️ **IMPORTANTE – Documento de Referência para Testes**  
 > Este README é apenas uma visão geral do projeto.  
 > **O documento oficial a ser seguido para execução e validação dos testes está em:**  
 > 👉 `src/doc/README.md`
-
+<br>
 Uma aplicação dedicada à exploração do catálogo cinematográfico do Studio Ghibli. Este dashboard implementa padrões modernos de arquitetura frontend, focando em reatividade, gerenciamento eficiente de cache e uma experiência de usuário (UX) refinada.
 
 ---
@@ -65,3 +65,10 @@ npm run dev
 
 # 5. Rodar cobertura de testes unitários
 npm run test:coverage
+```
+
+## 🚀 Demo em Produção
+
+> Clique na imagem abaixo para acessar o projeto em produção.
+
+[![Studio Ghibli Collection – Preview](./docs/preview.png)](https://studio-ghibli-jhordan-suzuki.vercel.app)
