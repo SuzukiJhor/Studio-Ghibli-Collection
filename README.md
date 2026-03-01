@@ -35,11 +35,14 @@ A arquitetura foi desenhada para escalabilidade e manutenção simplificada:
 * **Advanced Filtering:** Motor de busca multi-critério (Título, Sinopse, Favoritos, Anotações e Avaliações).
 * **Smart Highlight:** Algoritmo para destaque dinâmico de termos em sinopses selecionadas.
 * **Persistence Layer:** Gerenciamento de filmes favoritos e assistidos com persistência automática em `localStorage`.
+* **Theme Switching:** Alternância dinâmica entre temas **Dark** e **Light**.
+* **Internationalization:** Tradução automática das descrições dos filmes para **Português**.
 
 ### UX/UI Standard
 * **Empty State Handling:** Feedback visual customizado para buscas sem resultados.
 * **Real-time Feedback:** Sistema de notificações para ações de interação com o catálogo.
 * **Fluid Design:** Interface adaptativa para múltiplos viewports (Mobile-first).
+* **High Test Coverage:** Cobertura de testes unitários superior a **95%**.
 
 ---
 
