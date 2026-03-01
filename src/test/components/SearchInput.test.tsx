@@ -9,7 +9,7 @@ describe('SearchInput component', () => {
         );
 
         expect(
-            screen.getByPlaceholderText(/search movies/i)
+            screen.getByPlaceholderText(/Buscar Filmes/i)
         ).toBeInTheDocument();
     });
 

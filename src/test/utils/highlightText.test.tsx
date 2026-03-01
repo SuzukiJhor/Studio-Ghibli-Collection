@@ -12,7 +12,7 @@ describe('highlightText utility', () => {
 
         expect(result[1].type).toBe('mark');
 
-        expect(result[1].props.className).toContain('bg-indigo-500/40');
+        expect(result[1].props.className).toContain('rounded-sm px-1 font-semibold');
 
         expect(result[1].props.children).toBe('Castelo');
     });

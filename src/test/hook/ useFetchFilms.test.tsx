@@ -48,4 +48,26 @@ describe('useFetchFilms', () => {
         expect(toast.promise).toHaveBeenCalledTimes(1);
         expect(result.current.data).toEqual(mockFilms);
     });
+
+    it('deve formatar corretamente a mensagem de erro no toast', async () => {
+        const mockError = new Error('Falha na API');
+
+        (fetchAndTranslateFilms as Mock).mockRejectedValueOnce(mockError);
+
+        renderHook(() => useFetchFilms(), {
+            wrapper: createWrapper(),
+        });
+
+        await waitFor(() => {
+            expect(toast.promise).toHaveBeenCalled();
+        });
+
+        const [, messages] = (toast.promise as Mock).mock.calls[0];
+
+        expect(messages.error).toBeTypeOf('function');
+
+        const errorMessage = messages.error(mockError);
+
+        expect(errorMessage).toBe('Erro: Falha na API');
+    });
 });

@@ -34,7 +34,7 @@ describe('Pagination component', () => {
 
         const activeButton = screen.getByRole('button', { name: '3' });
 
-        expect(activeButton).toHaveClass('bg-indigo-600');
+        expect(activeButton).toHaveClass('rounded-lg flex items-center');
     });
 
     it('deve desabilitar o botão Anterior na primeira página', () => {

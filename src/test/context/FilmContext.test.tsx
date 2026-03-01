@@ -22,4 +22,12 @@ describe('useFilmContext', () => {
 
         expect(result.current).toBe(mockContextValue);
     });
+
+    it('deve lançar erro quando usado fora do FilmProvider', () => {
+        expect(() => {
+            renderHook(() => useFilmContext());
+        }).toThrowError(
+            'useFilmContext deve ser usado dentro de um FilmProvider'
+        );
+    });
 });

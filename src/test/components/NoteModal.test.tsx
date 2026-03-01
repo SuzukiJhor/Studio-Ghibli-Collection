@@ -78,4 +78,24 @@ describe('NoteModal component', () => {
             'Filme incrível'
         );
     });
+
+    it('deve destacar estrelas ao passar o mouse e remover ao sair', () => {
+        render(<NoteModal {...defaultProps} />);
+
+        const star3Button = screen.getByLabelText('avaliar 3 estrelas');
+        const star3Icon = star3Button.querySelector('svg');
+
+        expect(star3Icon).toHaveClass('text-yellow-400');
+
+        const star5Button = screen.getByLabelText('avaliar 5 estrelas');
+        const star5Icon = star5Button.querySelector('svg');
+
+        fireEvent.mouseEnter(star5Button);
+
+        expect(star5Icon).toHaveClass('text-yellow-400');
+
+        fireEvent.mouseLeave(star5Button);
+
+        expect(star5Icon).not.toHaveClass('text-yellow-400');
+    });
 });

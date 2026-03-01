@@ -121,4 +121,84 @@ describe('FilmProvider', () => {
         expect(mockUseFilmsReturn.setIncludeDescription).toHaveBeenCalledWith(false);
         expect(mockUseFilmsReturn.setFilterMode).toHaveBeenCalledWith([]);
     });
+
+    it('handleFilterChange deve remover filtro e chamar toast.error', () => {
+        (useFilms as Mock).mockReturnValue({
+            ...mockUseFilmsReturn,
+            filterMode: ['favorites'],
+        });
+
+        const { result } = renderHook(() => useFilmContext(), { wrapper });
+
+        act(() => {
+            result.current.handleFilterChange('favorites');
+        });
+
+        expect(toast.error).toHaveBeenCalledWith(
+            'Filtro removido',
+            { icon: '🗑️', id: 'favorites' }
+        );
+
+        expect(mockUseFilmsReturn.setFilterMode).toHaveBeenCalled();
+    });
+
+    it('toggleWatched deve remover dos assistidos e mostrar toast neutro', () => {
+        (useFilms as Mock).mockReturnValue({
+            ...mockUseFilmsReturn,
+            watched: ['1'],
+        });
+
+        const { result } = renderHook(() => useFilmContext(), { wrapper });
+
+        act(() => {
+            result.current.toggleWatched('1');
+        });
+
+        expect(mockUseFilmsReturn.toggleWatched).toHaveBeenCalledWith('1');
+
+        expect(toast).toHaveBeenCalledWith(
+            'Removido dos assistidos',
+            { icon: '📁' }
+        );
+    });
+
+    it('toggleFavorite deve remover dos favoritos e mostrar toast de remoção', () => {
+        (useFilms as Mock).mockReturnValue({
+            ...mockUseFilmsReturn,
+            favorites: ['1'],
+        });
+
+        const { result } = renderHook(() => useFilmContext(), { wrapper });
+
+        act(() => {
+            result.current.toggleFavorite('1');
+        });
+
+        expect(mockUseFilmsReturn.toggleFavorite).toHaveBeenCalledWith('1');
+
+        expect(toast).toHaveBeenCalledWith(
+            'Removido dos favoritos',
+            { icon: '💔', duration: 2000 }
+        );
+    });
+
+    it('toggleWatched deve remover dos assistidos e mostrar toast neutro', () => {
+        (useFilms as Mock).mockReturnValue({
+            ...mockUseFilmsReturn,
+            watched: ['1'],
+        });
+
+        const { result } = renderHook(() => useFilmContext(), { wrapper });
+
+        act(() => {
+            result.current.toggleWatched('1');
+        });
+
+        expect(mockUseFilmsReturn.toggleWatched).toHaveBeenCalledWith('1');
+
+        expect(toast).toHaveBeenCalledWith(
+            'Removido dos assistidos',
+            { icon: '📁' }
+        );
+    });
 });

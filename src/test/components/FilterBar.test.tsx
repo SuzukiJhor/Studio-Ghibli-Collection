@@ -7,11 +7,25 @@ vi.mock('../../contexts/FilmContext', () => ({
     useFilmContext: vi.fn()
 }));
 vi.mock('../../components/FilterPills', () => ({
-    FilterPills: ({ onClear, showClear }: { onClear: () => void, showClear: boolean }) => (
-        showClear ? (
-            <button onClick={onClear}>Resetar filtros</button>
-        ) : null
-    )
+    FilterPills: ({
+        onClear,
+        onToggle,
+        showClear,
+    }: {
+        onClear: () => void;
+        onToggle: (id: string) => void;
+        showClear: boolean;
+    }) => (
+        <div>
+            <button onClick={() => onToggle('Ghibli')}>
+                Toggle Ghibli
+            </button>
+
+            {showClear && (
+                <button onClick={onClear}>Resetar filtros</button>
+            )}
+        </div>
+    ),
 }));
 vi.mock('../../components/SearchInput', () => ({
     SearchInput: ({ value, onChange }: { value: string, onChange: (val: string) => void }) => (
@@ -23,6 +37,25 @@ vi.mock('../../components/SearchInput', () => ({
         />
     )
 }));
+vi.mock('../../components/SortSelect', () => ({
+    SortSelect: ({
+        value,
+        onChange,
+    }: {
+        value: string;
+        onChange: (val: string) => void;
+    }) => (
+        <select
+            data-testid="mock-sort-select"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+        >
+            <option value="title-asc">Título (A-Z)</option>
+            <option value="year-desc">Ano (Desc)</option>
+        </select>
+    ),
+}));
+
 describe('Componente FilterBar', () => {
     const mockSetSearch = vi.fn();
     const mockSetFilterMode = vi.fn();
@@ -126,5 +159,26 @@ describe('Componente FilterBar', () => {
         expect(mockSetIncludeDescription).toHaveBeenCalledWith(false);
         expect(mockSetSortBy).toHaveBeenCalledWith('title-asc');
         expect(mockOnPageReset).toHaveBeenCalled();
+    });
+
+    it('deve chamar handleFilterChange ao alternar um filtro', () => {
+        render(<FilterBar />);
+
+        const toggleBtn = screen.getByText('Toggle Ghibli');
+        fireEvent.click(toggleBtn);
+
+        expect(mockHandleFilterChange).toHaveBeenCalledWith('Ghibli');
+    });
+
+    it('deve alterar ordenação ao mudar o SortSelect', () => {
+        render(<FilterBar />);
+
+        const select = screen.getByTestId('mock-sort-select');
+
+        fireEvent.change(select, {
+            target: { value: 'year-desc' },
+        });
+
+        expect(mockSetSortBy).toHaveBeenCalledWith('year-desc');
     });
 });

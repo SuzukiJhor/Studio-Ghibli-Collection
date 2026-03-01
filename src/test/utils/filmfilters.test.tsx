@@ -66,4 +66,14 @@ describe('filmSorter utility', () => {
         const sorter = filmSorter('invalid-asc', {});
         expect(sorter(filmA, filmB)).toBe(0);
     });
+
+    it('deve ordenar por duração em ordem ascendente', () => {
+        const sorter = filmSorter('duration-asc', {});
+        expect(sorter(filmA, filmB)).toBeGreaterThan(0);
+    });
+
+    it('deve ordenar por duração em ordem ascendente', () => {
+        const sorter = filmSorter('duration-asc', {});
+        expect(sorter(filmA, filmB)).toBeGreaterThan(0);
+    });
 });

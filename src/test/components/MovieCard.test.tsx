@@ -2,11 +2,13 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { MovieCard } from '../../components/MovieCard';
 
+const mockFilmContext = {
+    search: '',
+    includeDescription: false,
+};
+
 vi.mock('../../contexts/FilmContext', () => ({
-    useFilmContext: () => ({
-        search: '',
-        includeDescription: false,
-    }),
+    useFilmContext: () => mockFilmContext,
 }));
 
 vi.mock('../../components/NoteModal', () => ({
@@ -133,8 +135,12 @@ describe('MovieCard component', () => {
         );
 
         fireEvent.click(screen.getByTitle('Anotações'));
+
+        expect(screen.getByTestId('note-modal')).toBeInTheDocument();
+
         fireEvent.click(screen.getByText('Salvar'));
 
+        expect(onSaveNote).toHaveBeenCalledTimes(1);
         expect(onSaveNote).toHaveBeenCalledWith(5, 'Ótimo filme');
     });
 
@@ -157,5 +163,84 @@ describe('MovieCard component', () => {
         );
 
         expect(screen.getByText('Sua nota: 4/5')).toBeInTheDocument();
+    });
+
+    it('deve fechar o modal ao clicar em "Fechar"', () => {
+        render(
+            <MovieCard
+                film={mockFilm}
+                isFavorite={false}
+                isWatched={false}
+                onFavorite={vi.fn()}
+                onWatched={vi.fn()}
+                onSaveNote={vi.fn()}
+            />
+        );
+
+        fireEvent.click(screen.getByTitle('Anotações'));
+
+        expect(screen.getByTestId('note-modal')).toBeInTheDocument();
+
+        fireEvent.click(screen.getByText('Fechar'));
+
+        expect(screen.queryByTestId('note-modal')).not.toBeInTheDocument();
+    });
+
+    it('deve exibir o selo de favorito quando isFavorite for true', () => {
+        render(
+            <MovieCard
+                film={mockFilm}
+                isFavorite={true}
+                isWatched={false}
+                onFavorite={vi.fn()}
+                onWatched={vi.fn()}
+                onSaveNote={vi.fn()}
+            />
+        );
+
+        const favoritos = screen.getAllByTitle('Favorito');
+
+        const badge = favoritos.find(el => el.tagName === 'DIV');
+
+        expect(badge).toBeInTheDocument();
+    });
+
+    it('deve marcar o botão "Visto" como ativo quando isWatched for true', () => {
+        render(
+            <MovieCard
+                film={mockFilm}
+                isWatched={true}
+                isFavorite={false}
+                onWatched={vi.fn()}
+                onFavorite={vi.fn()}
+                onSaveNote={vi.fn()}
+            />
+        );
+
+        const watchedButton = screen.getByRole('button', {
+            name: /assistido/i,
+        });
+
+        expect(watchedButton).toHaveAttribute('aria-pressed', 'true');
+    });
+
+    it('deve destacar o texto da descrição quando includeDescription for true e search existir', () => {
+        mockFilmContext.search = 'mágico';
+        mockFilmContext.includeDescription = true;
+
+        render(
+            <MovieCard
+                film={mockFilm}
+                isFavorite={false}
+                isWatched={false}
+                onFavorite={vi.fn()}
+                onWatched={vi.fn()}
+                onSaveNote={vi.fn()}
+            />
+        );
+
+        const highlighted = screen.getByText('mágico');
+
+        expect(highlighted.tagName).toBe('MARK');
     });
 });

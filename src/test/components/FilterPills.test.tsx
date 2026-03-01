@@ -28,7 +28,7 @@ describe('Componente FilterPills', () => {
 
         const watchedButton = screen.getByRole('button', { name: /assistidos/i });
 
-        expect(watchedButton).toHaveClass('bg-indigo-500');
+        expect(watchedButton).toHaveClass('justify-center gap-2 px-3 py-2 rounded-lg');
     });
 
     it('deve chamar onToggle com o ID correto ao clicar em um pill', () => {

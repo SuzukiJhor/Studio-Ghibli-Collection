@@ -4,11 +4,14 @@ import { MovieList } from '../../components/MovieList';
 import { useFilmContext } from '../../contexts/FilmContext';
 
 vi.mock('../../components/MovieCard', () => ({
-    MovieCard: ({ film, onFavorite, onWatched }: any) => (
+    MovieCard: ({ film, onFavorite, onWatched, onSaveNote }: any) => (
         <div data-testid="movie-card">
             <span>{film.title}</span>
             <button onClick={onFavorite}>fav</button>
             <button onClick={onWatched}>watched</button>
+            <button onClick={() => onSaveNote(5, 'Ótimo filme')}>
+                salvar-nota
+            </button>
         </div>
     ),
 }));
@@ -136,5 +139,56 @@ describe('MovieList component', () => {
         render(<MovieList currentFilms={[]} />);
         fireEvent.click(screen.getByText('reset'));
         expect(mockResetAll).toHaveBeenCalled();
+    });
+
+    it('deve chamar toggleWatched ao clicar em "watched"', () => {
+        (useFilmContext as any).mockReturnValue({
+            loading: false,
+            filteredFilms: mockFilms,
+            favorites: [],
+            watched: [],
+            toggleFavorite: mockToggleFavorite,
+            toggleWatched: mockToggleWatched,
+            userNotes: {},
+            saveMovieNote: mockSaveMovieNote,
+            resetAll: mockResetAll,
+        });
+
+        render(<MovieList currentFilms={mockFilms as any} />);
+
+        fireEvent.click(screen.getAllByText('watched')[1]);
+
+        expect(mockToggleWatched).toHaveBeenCalledWith('2');
+    });
+
+    it('deve chamar saveMovieNote com id do filme, rating e notes', () => {
+        const mockSaveMovieNote = vi.fn();
+
+        (useFilmContext as any).mockReturnValue({
+            loading: false,
+            filteredFilms: [{ id: '1', title: 'Spirited Away' }],
+            favorites: [],
+            watched: [],
+            toggleFavorite: vi.fn(),
+            toggleWatched: vi.fn(),
+            userNotes: {},
+            saveMovieNote: mockSaveMovieNote,
+            resetAll: vi.fn(),
+        });
+
+        render(
+            <MovieList
+                currentFilms={[{ id: '1', title: 'Spirited Away' } as any]}
+            />
+        );
+
+        fireEvent.click(screen.getByText('salvar-nota'));
+
+        expect(mockSaveMovieNote).toHaveBeenCalledTimes(1);
+        expect(mockSaveMovieNote).toHaveBeenCalledWith(
+            '1',
+            5,
+            'Ótimo filme'
+        );
     });
 });

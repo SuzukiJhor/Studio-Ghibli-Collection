@@ -1,45 +1,40 @@
 import { render, screen } from '@testing-library/react';
+import { describe, it, beforeEach, expect } from 'vitest';
 import { Header } from '../../components/Header';
 
 describe('Header component', () => {
-    it('deve renderizar o título principal', () => {
+    beforeEach(() => {
         render(<Header />);
-
-        const title = screen.getByRole('heading', { level: 1 });
-        expect(title).toHaveTextContent('Collection');
-        expect(title).toHaveTextContent('Studio Ghibli');
     });
 
-    it('deve exibir o selo "Ghibli Universe"', () => {
-        render(<Header />);
-
-        expect(
-            screen.getByText('Ghibli Universe')
-        ).toBeInTheDocument();
-    });
-
-    it('deve renderizar o texto descritivo principal', () => {
-        render(<Header />);
-
-        expect(
-            screen.getByText(/Explore o catálogo lendário do estúdio/i)
-        ).toBeInTheDocument();
-    });
-
-    it('deve exibir o destaque "Organize sua jornada"', () => {
-        render(<Header />);
-
-        const paragraph = screen.getByText(/Explore o catálogo lendário/i);
-        expect(paragraph).toHaveTextContent('Organize sua jornada');
-    });
-
-    it('deve renderizar corretamente a estrutura semântica', () => {
-        render(<Header />);
-
+    it('renders semantic header structure', () => {
         expect(screen.getByRole('banner')).toBeInTheDocument();
+    });
 
+    it('renders the main heading (h1)', () => {
+        const heading = screen.getByRole('heading', { level: 1 });
+
+        expect(heading).toBeInTheDocument();
+        expect(heading).toHaveTextContent(/studio ghibli/i);
+        expect(heading).toHaveTextContent(/film collection/i);
+    });
+
+    it('displays the Ghibli Universe badge', () => {
         expect(
-            screen.getByRole('heading', { level: 1 })
+            screen.getByText(/ghibli universe/i)
         ).toBeInTheDocument();
+    });
+
+    it('renders the main descriptive paragraph', () => {
+        expect(
+            screen.getByText(/explore o universo encantado/i)
+        ).toBeInTheDocument();
+    });
+
+    it('highlights key concepts in the description', () => {
+        expect(screen.getByText(/redefiniu a animação mundial/i)).toBeInTheDocument();
+        expect(screen.getByText(/jornada/i)).toBeInTheDocument();
+        expect(screen.getByText(/favoritos/i)).toBeInTheDocument();
+        expect(screen.getByText(/história/i)).toBeInTheDocument();
     });
 });
