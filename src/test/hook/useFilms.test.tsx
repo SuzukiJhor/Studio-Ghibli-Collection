@@ -1,5 +1,5 @@
 import { renderHook, act } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 import { useFilms } from '../../hooks/useFilms';
 import { useFetchFilms } from '../../hooks/useFetchFilms';
 import { useFilmStorage } from '../../hooks/useFilmStorage';
@@ -33,13 +33,13 @@ const mockFilms = [
 beforeEach(() => {
     vi.clearAllMocks();
 
-    (useFetchFilms as vi.Mock).mockReturnValue({
+    (useFetchFilms as Mock).mockReturnValue({
         data: mockFilms,
         isLoading: false,
         error: null,
     });
 
-    (useFilmStorage as vi.Mock).mockReturnValue({
+    (useFilmStorage as Mock).mockReturnValue({
         favorites: ['1'],
         watched: [],
         userNotes: {},
@@ -97,7 +97,7 @@ describe('useFilms', () => {
     });
 
     it('deve expor estados de loading e error', () => {
-        (useFetchFilms as vi.Mock).mockReturnValueOnce({
+        (useFetchFilms as Mock).mockReturnValueOnce({
             data: [],
             isLoading: true,
             error: null,

@@ -1,5 +1,5 @@
 import { renderHook, act } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 import { useFilmStorage } from '../../hooks/useFilmStorage';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 
@@ -19,7 +19,7 @@ describe('useFilmStorage', () => {
         setFavorites = vi.fn();
         setWatched = vi.fn();
 
-        (useLocalStorage as vi.Mock)
+        (useLocalStorage as Mock)
             .mockImplementationOnce(() => [{}, setUserNotes])
             .mockImplementationOnce(() => [[], setFavorites])
             .mockImplementationOnce(() => [[], setWatched]);

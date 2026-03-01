@@ -144,7 +144,12 @@ describe('MovieCard component', () => {
                 film={mockFilm}
                 isFavorite={false}
                 isWatched={false}
-                userData={{ userRating: 4, notes: 'Muito bom' }}
+                userData={{
+                    userRating: 4,
+                    notes: 'Muito bom',
+                    isFavorite: false,
+                    isWatched: false,
+                }}
                 onFavorite={vi.fn()}
                 onWatched={vi.fn()}
                 onSaveNote={vi.fn()}

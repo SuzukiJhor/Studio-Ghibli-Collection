@@ -1,5 +1,5 @@
 import { renderHook, act } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 import toast from 'react-hot-toast';
 import { useFilmContext } from '../../contexts/FilmContext';
 import { useFilms } from '../../hooks/useFilms';
@@ -9,13 +9,14 @@ vi.mock('../../hooks/useFilms', () => ({
     useFilms: vi.fn(),
 }));
 vi.mock('react-hot-toast', () => {
-    const toastFn = vi.fn();
-
-    toastFn.success = vi.fn();
-    toastFn.error = vi.fn();
+    const toast = Object.assign(vi.fn(), {
+        success: vi.fn(),
+        error: vi.fn(),
+        promise: vi.fn(),
+    });
 
     return {
-        default: toastFn,
+        default: toast,
     };
 });
 
@@ -48,7 +49,7 @@ const wrapper = ({ children }: { children: React.ReactNode }) => (
 describe('FilmProvider', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        (useFilms as unknown as vi.Mock).mockReturnValue(mockUseFilmsReturn);
+        (useFilms as Mock).mockReturnValue(mockUseFilmsReturn);
     });
 
     it('deve fornecer o contexto corretamente', () => {

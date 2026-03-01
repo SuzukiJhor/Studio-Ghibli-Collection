@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, Mock } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
@@ -34,7 +34,7 @@ describe('useFetchFilms', () => {
     it('deve buscar os filmes e chamar toast.promise', async () => {
         const mockFilms = [{ id: '1', title: 'Totoro' }];
 
-        (fetchAndTranslateFilms as vi.Mock).mockResolvedValueOnce(mockFilms);
+        (fetchAndTranslateFilms as Mock).mockResolvedValueOnce(mockFilms);
 
         const { result } = renderHook(() => useFetchFilms(), {
             wrapper: createWrapper(),
