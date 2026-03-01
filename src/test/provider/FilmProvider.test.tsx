@@ -201,4 +201,71 @@ describe('FilmProvider', () => {
             { icon: '📁' }
         );
     });
+
+    it('saveMovieNote deve mostrar toast de remoção quando a nota for zerada (isDelete)', () => {
+        const { result } = renderHook(() => useFilmContext(), { wrapper });
+
+        act(() => {
+            result.current.saveMovieNote('1', 0, '');
+        });
+
+        expect(mockUseFilmsReturn.saveNote).toHaveBeenCalledWith('1', 0, '');
+
+        expect(toast).toHaveBeenCalledWith(
+            'Nota removida',
+            expect.objectContaining({
+                icon: '🗑️',
+                style: expect.objectContaining({
+                    border: '1px solid #ef4444',
+                    backgroundColor: 'var(--bg)'
+                })
+            })
+        );
+
+        expect(toast.success).not.toHaveBeenCalled();
+    });
+    describe('FilmProvider - Lógica de setFilterMode', () => {
+
+        it('deve ADICIONAR um modo ao filtro quando ele não estiver presente ([...prev, mode])', () => {
+            (useFilms as Mock).mockReturnValue({
+                ...mockUseFilmsReturn,
+                filterMode: [],
+            });
+
+            const { result } = renderHook(() => useFilmContext(), { wrapper });
+
+            act(() => {
+                result.current.handleFilterChange('favorites');
+            });
+
+    
+            const updaterSelector = mockUseFilmsReturn.setFilterMode.mock.calls[0][0];
+            const prevState: string[] = [];
+            const newState = updaterSelector(prevState);
+
+            expect(newState).toContain('favorites');
+            expect(newState).toHaveLength(1);
+        });
+
+        it('deve REMOVER um modo do filtro quando ele já estiver presente (prev.filter)', () => {
+            (useFilms as Mock).mockReturnValue({
+                ...mockUseFilmsReturn,
+                filterMode: ['favorites'],
+            });
+
+            const { result } = renderHook(() => useFilmContext(), { wrapper });
+
+            act(() => {
+                result.current.handleFilterChange('favorites');
+            });
+
+            const updaterSelector = mockUseFilmsReturn.setFilterMode.mock.calls[0][0];
+            const prevState = ['favorites', 'watched'];
+            const newState = updaterSelector(prevState);
+
+            expect(newState).not.toContain('favorites');
+            expect(newState).toContain('watched');
+            expect(newState).toHaveLength(1);
+        });
+    });
 });
