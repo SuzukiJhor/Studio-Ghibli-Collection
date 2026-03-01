@@ -60,11 +60,16 @@ cd Studio-Ghibli-Collection
 # 3. Instalar dependências
 npm install
 
-# 4. Iniciar ambiente de desenvolvimento
+# 4. Rodar cobertura de testes unitários
+npm run test:coverage
+
+# 5. Iniciar ambiente de desenvolvimento
 npm run dev
 
-# 5. Rodar cobertura de testes unitários
-npm run test:coverage
+# Projeto disponivel em:
+http://localhost:5173/
+
+
 ```
 
 
