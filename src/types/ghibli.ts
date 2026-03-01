@@ -6,6 +6,7 @@ export interface Film {
   image: string;
   movie_banner: string;
   description: string;
+  descriptionTranslated?: string;
   director: string;
   producer: string;
   release_date: string;

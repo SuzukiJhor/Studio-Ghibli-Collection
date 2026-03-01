@@ -50,14 +50,14 @@ export const Pagination = ({
                             key={page}
                             onClick={() => onPageChange(page)}
                             className={`
-                w-10 h-10 rounded-lg
-                flex items-center justify-center
-                text-sm font-bold
-                transition-all duration-200
-                ${isActive
+                            w-10 h-10 rounded-lg
+                            flex items-center justify-center
+                            text-sm font-bold
+                            transition-all duration-200
+                            ${isActive
                                     ? 'accent-active'
                                     : 'text-muted hover:bg-[color-mix(in_oklab,var(--accent)_12%,transparent)]'}
-              `}
+                        `}
                         >
                             {page}
                         </button>

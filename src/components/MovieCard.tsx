@@ -27,13 +27,25 @@ export const MovieCard = ({
     const { search, includeDescription } = useFilmContext();
     const [isExpanded, setIsExpanded] = useState(false);
     const [showModal, setShowModal] = useState(false);
+    const [showOriginal, setShowOriginal] = useState(false);
 
     const hasNote = !!userData?.notes?.trim();
     const hasRating = (userData?.userRating ?? 0) > 0;
 
-    const fullText = film.description;
+    const fullText = showOriginal
+        ? film.description
+        : film.descriptionTranslated;
+
     const truncatedText = `${fullText.substring(0, 120)}...`;
     const textToDisplay = isExpanded ? fullText : truncatedText;
+
+    const ringColor = isWatched
+        ? 'color-mix(in oklab, var(--accent) 40%, transparent)'
+        : isFavorite
+            ? 'color-mix(in oklab, var(--danger) 40%, transparent)'
+            : 'transparent';
+
+    const borderColor = 'color-mix(in oklab, var(--text) 12%, transparent)';
 
     const highlightedDescription =
         includeDescription && search
@@ -49,15 +61,11 @@ export const MovieCard = ({
         <div
             className="group relative flex flex-col rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2"
             style={{
-                backgroundColor:
-                    'color-mix(in oklab, var(--bg) 92%, transparent)',
                 border: '1px solid',
-                borderColor:
-                    'color-mix(in oklab, var(--text) 12%, transparent)',
-                boxShadow:
-                    isWatched
-                        ? '0 0 0 2px color-mix(in oklab, var(--accent) 40%, transparent)'
-                        : 'none',
+                borderColor,
+                boxShadow: ringColor !== 'transparent'
+                    ? `0 0 0 2px ${ringColor}`
+                    : 'none',
             }}
         >
             <div className="relative aspect-2/3 overflow-hidden">
@@ -165,7 +173,12 @@ export const MovieCard = ({
                         </span>
                     )}
                 </div>
-
+                <button
+                    onClick={() => setShowOriginal((prev) => !prev)}
+                    className="font-bold inline-flex items-center gap-1"
+                >
+                    {showOriginal ? 'Ver tradução' : 'Ver original'}
+                </button>
                 <div
                     className="text-sm leading-relaxed mb-6 grow"
                     style={{ color: 'color-mix(in oklab, var(--text) 65%, transparent)' }}

@@ -8,8 +8,10 @@ export const fetchAndTranslateFilms = async (): Promise<Film[]> => {
 
     const data: Film[] = await res.json();
 
-    return data.map(film => ({
+    return data.map((film) => ({
         ...film,
-        description: movieTranslations[film.id]?.description || film.description
+        description: film.description,
+        descriptionTranslated:
+            movieTranslations[film.id]?.description || film.description,
     }));
 };
