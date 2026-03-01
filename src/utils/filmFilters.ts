@@ -1,6 +1,7 @@
 import type { Film, UserNotesMap } from "../types/ghibli";
 
 export const filmSorter = (sortBy: string, userNotes: UserNotesMap) => (a: Film, b: Film) => {
+    
     const [field, direction] = sortBy.split('-');
     const isAsc = direction === 'asc';
     const modifier = isAsc ? 1 : -1;

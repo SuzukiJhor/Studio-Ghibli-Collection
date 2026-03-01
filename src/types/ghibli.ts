@@ -18,6 +18,8 @@ export type FilterMode = 'all' | 'favorites' | 'watched' | 'withNotes' | 'rating
 export type UserData = {
   userRating: number;
   notes: string;
+  isFavorite: boolean;
+  isWatched: boolean;
 };
 
 export type UserNotesMap = Record<string, UserData>;

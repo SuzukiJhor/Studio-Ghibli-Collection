@@ -13,7 +13,15 @@ export function useFilmStorage() {
         setWatched(prev => prev.includes(id) ? prev.filter(w => w !== id) : [...prev, id]);
 
     const saveNote = (id: string, rating: number, notes: string) =>
-        setUserNotes(prev => ({ ...prev, [id]: { userRating: rating, notes } }));
+        setUserNotes(prev => ({
+            ...prev,
+            [id]: {
+                userRating: rating,
+                notes,
+                isFavorite: prev[id]?.isFavorite ?? false,
+                isWatched: prev[id]?.isWatched ?? false,
+            },
+        }));
 
     return { userNotes, favorites, watched, toggleFavorite, toggleWatched, saveNote };
 }

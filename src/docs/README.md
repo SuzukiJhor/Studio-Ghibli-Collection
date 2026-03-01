@@ -13,7 +13,7 @@ Você deverá desenvolver uma aplicação que consome a API pública do [Studio 
 
 ### ✅ Obrigatórios
 
-- [ ]  Listar filmes com as seguintes informações
+- [x]  Listar filmes com as seguintes informações
     - Imagem do filme
     - Título
     - Ano de lançamento
@@ -21,19 +21,19 @@ Você deverá desenvolver uma aplicação que consome a API pública do [Studio 
     - Sinopse
     - Diretor e Produtor
     - Nota de avaliação (campo `rt_score`)
-- [ ]  Marcar o filme como assistido
-- [ ]  Marcar o filme como favorito
-- [ ]  Filtrar os filmes por título através de um campo de texto
-- [ ]  Buscar palavras do filtro de texto na sinopse do filme
+- [x]  Marcar o filme como assistido
+- [x]  Marcar o filme como favorito
+- [x]  Filtrar os filmes por título através de um campo de texto
+- [x]  Buscar palavras do filtro de texto na sinopse do filme
     - Ao selecionar a opção “Incluir sinopse na busca**”,** além de filtrar os filmes, também deve destacar o texto buscado na sinopse com alguma cor.
-- [ ]  Adicionar anotações de texto a um filme
-- [ ]  Adicionar, junto à anotação, uma avaliação pessoal de 1 a 5 estrelas
-- [ ]  Filtrar os filmes por:
+- [x]  Adicionar anotações de texto a um filme
+- [x]  Adicionar, junto à anotação, uma avaliação pessoal de 1 a 5 estrelas
+- [x]  Filtrar os filmes por:
     - Assistido
     - Favorito
     - Com anotação.
     - Número de estrelas
-- [ ]  Ordenar filmes (de forma crescente e decrescente) por:
+- [x]  Ordenar filmes (de forma crescente e decrescente) por:
     - Título
     - Duração
     - Avaliação pessoal
@@ -41,20 +41,20 @@ Você deverá desenvolver uma aplicação que consome a API pública do [Studio 
 
 ### ✨ Desejáveis
 
-- [ ]  Utilizar **TypeScript**
-- [ ]  Implementar responsividade básica
-- [ ]  Persistir os seguintes dados no LocalStorage:
+- [x]  Utilizar **TypeScript**
+- [x]  Implementar responsividade básica
+- [x]  Persistir os seguintes dados no LocalStorage:
     - Lista de filmes e suas características (assistido / favorito / anotação / avaliação)
     - Filtros selecionados
     - Opção de ordenação selecionada
-- [ ]  Adicionar mensagens toast para as operações
+- [x]  Adicionar mensagens toast para as operações
     - Marcar/desmarcar o filme como assistido, favorito;
     - Adicionar/editar/remover anotação;
-- [ ]  Escrever pelo menos 1 **teste unitário** (ex: botão de favorito ou função de marcação)
-- [ ]  Separação clara de responsabilidades (componentes, serviços de API, etc.)
-- [ ]  Utilizar biblioteca de estilo (Styled-components, Tailwind, Shadcn-ui, etc.)
-- [ ]  Utilizar Context API ou uma solução de estado global (Redux, zustand, etc.)
-- [ ]  Utilizar solução para gerenciar estado assíncrono (axios, tanstack query, etc.)
+- [x]  Escrever pelo menos 1 **teste unitário** (ex: botão de favorito ou função de marcação)
+- [x]  Separação clara de responsabilidades (componentes, serviços de API, etc.)
+- [x]  Utilizar biblioteca de estilo (Styled-components, Tailwind, Shadcn-ui, etc.)
+- [x]  Utilizar Context API ou uma solução de estado global (Redux, zustand, etc.)
+- [x]  Utilizar solução para gerenciar estado assíncrono (axios, tanstack query, etc.)
 
 ## 💻 Sugestão de interface
 

@@ -17,7 +17,9 @@ export const NoteModal = ({ movieTitle, initialRating, initialNotes, onClose, on
 
     const modalContent = (
         <div
-            className="fixed inset-0 z-9999 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-md animate-in fade-in duration-200"
+            role="dialog"
+            aria-label={`Notas do filme ${movieTitle}`}
+            className="fixed inset-0 z-9999 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-md"
             onClick={onClose}
         >
             <div
@@ -43,6 +45,7 @@ export const NoteModal = ({ movieTitle, initialRating, initialNotes, onClose, on
                             <div className="flex items-center bg-white/5 p-2 rounded-xl border border-white/5">
                                 {[1, 2, 3, 4, 5].map((star) => (
                                     <button
+                                        aria-label={`avaliar ${star} estrelas`}
                                         key={star}
                                         type="button"
                                         className="p-1 transition-transform hover:scale-125 active:scale-90"
