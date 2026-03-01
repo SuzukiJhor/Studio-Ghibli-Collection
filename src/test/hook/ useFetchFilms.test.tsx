@@ -1,19 +1,11 @@
-import { describe, it, expect, vi, Mock } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import toast from 'react-hot-toast';
-
-import { useFetchFilms } from '../../hooks/useFetchFilms';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { fetchAndTranslateFilms } from '../../services/fetchAndTranslateFilms';
+import { useFetchFilms } from '../../hooks/useFetchFilms';
 
 vi.mock('../../services/fetchAndTranslateFilms', () => ({
     fetchAndTranslateFilms: vi.fn(),
-}));
-
-vi.mock('react-hot-toast', () => ({
-    default: {
-        promise: vi.fn(),
-    },
 }));
 
 const createWrapper = () => {
@@ -22,52 +14,39 @@ const createWrapper = () => {
             queries: { retry: false },
         },
     });
-
     return ({ children }: { children: React.ReactNode }) => (
-        <QueryClientProvider client={queryClient}>
-            {children}
-        </QueryClientProvider>
+        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     );
 };
 
-describe('useFetchFilms', () => {
-    it('deve buscar os filmes e chamar toast.promise', async () => {
-        const mockFilms = [{ id: '1', title: 'Totoro' }];
+describe('useFetchFilms Hook', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
 
-        (fetchAndTranslateFilms as Mock).mockResolvedValueOnce(mockFilms);
+    it('deve retornar o estado inicial de carregamento', async () => {
+        (fetchAndTranslateFilms as any).mockReturnValue(new Promise(() => { }));
 
         const { result } = renderHook(() => useFetchFilms(), {
             wrapper: createWrapper(),
         });
 
-        await waitFor(() => {
-            expect(result.current.isSuccess).toBe(true);
-        });
-
-        expect(fetchAndTranslateFilms).toHaveBeenCalledTimes(1);
-        expect(toast.promise).toHaveBeenCalledTimes(1);
-        expect(result.current.data).toEqual(mockFilms);
+        expect(result.current.isLoading).toBe(true);
     });
 
-    it('deve formatar corretamente a mensagem de erro no toast', async () => {
-        const mockError = new Error('Falha na API');
+    it('deve retornar os dados traduzidos com sucesso', async () => {
+        const mockFilms = [
+            { id: '1', title: 'Castelo Animado', description: 'Tradução PT-BR' },
+        ];
+        (fetchAndTranslateFilms as any).mockResolvedValue(mockFilms);
 
-        (fetchAndTranslateFilms as Mock).mockRejectedValueOnce(mockError);
-
-        renderHook(() => useFetchFilms(), {
+        const { result } = renderHook(() => useFetchFilms(), {
             wrapper: createWrapper(),
         });
 
-        await waitFor(() => {
-            expect(toast.promise).toHaveBeenCalled();
-        });
+        await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-        const [, messages] = (toast.promise as Mock).mock.calls[0];
-
-        expect(messages.error).toBeTypeOf('function');
-
-        const errorMessage = messages.error(mockError);
-
-        expect(errorMessage).toBe('Erro: Falha na API');
+        expect(result.current.data).toEqual(mockFilms);
+        expect(fetchAndTranslateFilms).toHaveBeenCalledTimes(1);
     });
 });

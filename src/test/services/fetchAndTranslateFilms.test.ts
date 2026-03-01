@@ -23,7 +23,7 @@ const mockFilms: Film[] = [
         image: 'image.jpg',
         original_title: '',
         original_title_romanised: '',
-        movie_banner: ''
+        movie_banner: '',
     },
 ];
 
@@ -32,7 +32,7 @@ describe('fetchAndTranslateFilms', () => {
         vi.restoreAllMocks();
     });
 
-    it('deve retornar os filmes com descrição traduzida quando existir tradução', async () => {
+    it('deve manter a descrição original em "description"', async () => {
         global.fetch = vi.fn().mockResolvedValue({
             ok: true,
             json: async () => mockFilms,
@@ -40,10 +40,21 @@ describe('fetchAndTranslateFilms', () => {
 
         const result = await fetchAndTranslateFilms();
 
-        expect(result[0].description).toBe('Descrição traduzida');
+        expect(result[0].description).toBe('Original description');
     });
 
-    it('deve manter a descrição original quando não houver tradução', async () => {
+    it('deve usar a descrição traduzida quando existir tradução', async () => {
+        global.fetch = vi.fn().mockResolvedValue({
+            ok: true,
+            json: async () => mockFilms,
+        } as Response);
+
+        const result = await fetchAndTranslateFilms();
+
+        expect(result[0].descriptionTranslated).toBe('Descrição traduzida');
+    });
+
+    it('deve usar a descrição original como fallback quando não houver tradução', async () => {
         global.fetch = vi.fn().mockResolvedValue({
             ok: true,
             json: async () => [
@@ -56,7 +67,7 @@ describe('fetchAndTranslateFilms', () => {
 
         const result = await fetchAndTranslateFilms();
 
-        expect(result[0].description).toBe('Original description');
+        expect(result[0].descriptionTranslated).toBe('Original description');
     });
 
     it('deve lançar erro quando a API responder com erro', async () => {

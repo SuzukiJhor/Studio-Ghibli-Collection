@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { Footer } from './components/Footer';
+import { toastStyles } from './toasts/style';
 import { Header } from './components/Header';
 import { MovieList } from './components/MovieList';
 import { FilterBar } from './components/FilterBar';
@@ -58,15 +59,8 @@ export default function App() {
                 <FilmProvider>
                     <Toaster
                         position="bottom-right"
-                        toastOptions={{
-                            style: {
-                                background: '#1e1e1e',
-                                color: '#fff',
-                                border: '1px solid rgba(255,255,255,0.1)',
-                            },
-                        }}
+                        toastOptions={toastStyles}
                     />
-
                     <AppContent />
                 </FilmProvider>
             </QueryClientProvider>

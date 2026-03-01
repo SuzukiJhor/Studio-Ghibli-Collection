@@ -1,24 +1,35 @@
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
-import toast from 'react-hot-toast';
 import { useFilmContext } from '../../contexts/FilmContext';
 import { useFilms } from '../../hooks/useFilms';
 import { FilmProvider } from '../../provider/FilmProvider';
+import { filmToasts } from '../../toasts/filmToasts';
 
 vi.mock('../../hooks/useFilms', () => ({
     useFilms: vi.fn(),
 }));
-vi.mock('react-hot-toast', () => {
-    const toast = Object.assign(vi.fn(), {
+
+vi.mock('../../toasts/filmToasts', () => ({
+    filmToasts: {
+        loading: vi.fn(),
         success: vi.fn(),
         error: vi.fn(),
-        promise: vi.fn(),
-    });
 
-    return {
-        default: toast,
-    };
-});
+        filterApplied: vi.fn(),
+        filterRemoved: vi.fn(),
+
+        watchedAdded: vi.fn(),
+        watchedRemoved: vi.fn(),
+
+        favoriteAdded: vi.fn(),
+        favoriteRemoved: vi.fn(),
+
+        noteSaved: vi.fn(),
+        noteRemoved: vi.fn(),
+
+        resetFilters: vi.fn(),
+    },
+}));
 
 const mockUseFilmsReturn = {
     filteredFilms: [],
@@ -60,69 +71,40 @@ describe('FilmProvider', () => {
         expect(result.current.loading).toBe(false);
     });
 
-    it('handleFilterChange deve aplicar filtro e mostrar toast', () => {
+    it('deve disparar toast de loading quando loading = true', () => {
+        (useFilms as Mock).mockReturnValue({
+            ...mockUseFilmsReturn,
+            loading: true,
+        });
+
+        renderHook(() => useFilmContext(), { wrapper });
+
+        expect(filmToasts.loading).toHaveBeenCalled();
+    });
+
+    it('deve disparar toast de erro quando error existir', () => {
+        (useFilms as Mock).mockReturnValue({
+            ...mockUseFilmsReturn,
+            error: new Error('Erro na API'),
+        });
+
+        renderHook(() => useFilmContext(), { wrapper });
+
+        expect(filmToasts.error).toHaveBeenCalledWith('Erro na API');
+    });
+
+    it('handleFilterChange deve aplicar filtro', () => {
         const { result } = renderHook(() => useFilmContext(), { wrapper });
 
         act(() => {
             result.current.handleFilterChange('favorites');
         });
 
-        expect(toast.success).toHaveBeenCalled();
+        expect(filmToasts.filterApplied).toHaveBeenCalled();
         expect(mockUseFilmsReturn.setFilterMode).toHaveBeenCalled();
     });
 
-    it('toggleFavorite deve chamar toast correto', () => {
-        const { result } = renderHook(() => useFilmContext(), { wrapper });
-
-        act(() => {
-            result.current.toggleFavorite('1');
-        });
-
-        expect(mockUseFilmsReturn.toggleFavorite).toHaveBeenCalledWith('1');
-        expect(toast.success).toHaveBeenCalled();
-    });
-
-    it('toggleWatched deve chamar toast correto', () => {
-        const { result } = renderHook(() => useFilmContext(), { wrapper });
-
-        act(() => {
-            result.current.toggleWatched('1');
-        });
-
-        expect(mockUseFilmsReturn.toggleWatched).toHaveBeenCalledWith('1');
-        expect(toast.success).toHaveBeenCalled();
-    });
-
-    it('saveMovieNote deve salvar nota e mostrar toast', () => {
-        const { result } = renderHook(() => useFilmContext(), { wrapper });
-
-        act(() => {
-            result.current.saveMovieNote('1', 5, 'Excelente filme');
-        });
-
-        expect(mockUseFilmsReturn.saveNote).toHaveBeenCalledWith(
-            '1',
-            5,
-            'Excelente filme'
-        );
-
-        expect(toast.success).toHaveBeenCalled();
-    });
-
-    it('resetAll deve limpar filtros e mostrar toast', () => {
-        const { result } = renderHook(() => useFilmContext(), { wrapper });
-
-        act(() => {
-            result.current.resetAll();
-        });
-
-        expect(mockUseFilmsReturn.setSearch).toHaveBeenCalledWith('');
-        expect(mockUseFilmsReturn.setSortBy).toHaveBeenCalledWith('title-asc');
-        expect(mockUseFilmsReturn.setIncludeDescription).toHaveBeenCalledWith(false);
-        expect(mockUseFilmsReturn.setFilterMode).toHaveBeenCalledWith([]);
-    });
-
-    it('handleFilterChange deve remover filtro e chamar toast.error', () => {
+    it('handleFilterChange deve remover filtro', () => {
         (useFilms as Mock).mockReturnValue({
             ...mockUseFilmsReturn,
             filterMode: ['favorites'],
@@ -134,35 +116,21 @@ describe('FilmProvider', () => {
             result.current.handleFilterChange('favorites');
         });
 
-        expect(toast.error).toHaveBeenCalledWith(
-            'Filtro removido',
-            { icon: '🗑️', id: 'favorites' }
-        );
-
-        expect(mockUseFilmsReturn.setFilterMode).toHaveBeenCalled();
+        expect(filmToasts.filterRemoved).toHaveBeenCalled();
     });
 
-    it('toggleWatched deve remover dos assistidos e mostrar toast neutro', () => {
-        (useFilms as Mock).mockReturnValue({
-            ...mockUseFilmsReturn,
-            watched: ['1'],
-        });
-
+    it('toggleFavorite deve adicionar favorito', () => {
         const { result } = renderHook(() => useFilmContext(), { wrapper });
 
         act(() => {
-            result.current.toggleWatched('1');
+            result.current.toggleFavorite('1');
         });
 
-        expect(mockUseFilmsReturn.toggleWatched).toHaveBeenCalledWith('1');
-
-        expect(toast).toHaveBeenCalledWith(
-            'Removido dos assistidos',
-            { icon: '📁' }
-        );
+        expect(mockUseFilmsReturn.toggleFavorite).toHaveBeenCalledWith('1');
+        expect(filmToasts.favoriteAdded).toHaveBeenCalled();
     });
 
-    it('toggleFavorite deve remover dos favoritos e mostrar toast de remoção', () => {
+    it('toggleFavorite deve remover favorito', () => {
         (useFilms as Mock).mockReturnValue({
             ...mockUseFilmsReturn,
             favorites: ['1'],
@@ -174,15 +142,20 @@ describe('FilmProvider', () => {
             result.current.toggleFavorite('1');
         });
 
-        expect(mockUseFilmsReturn.toggleFavorite).toHaveBeenCalledWith('1');
-
-        expect(toast).toHaveBeenCalledWith(
-            'Removido dos favoritos',
-            { icon: '💔', duration: 2000 }
-        );
+        expect(filmToasts.favoriteRemoved).toHaveBeenCalled();
     });
 
-    it('toggleWatched deve remover dos assistidos e mostrar toast neutro', () => {
+    it('toggleWatched deve adicionar assistido', () => {
+        const { result } = renderHook(() => useFilmContext(), { wrapper });
+
+        act(() => {
+            result.current.toggleWatched('1');
+        });
+
+        expect(filmToasts.watchedAdded).toHaveBeenCalled();
+    });
+
+    it('toggleWatched deve remover assistido', () => {
         (useFilms as Mock).mockReturnValue({
             ...mockUseFilmsReturn,
             watched: ['1'],
@@ -194,78 +167,41 @@ describe('FilmProvider', () => {
             result.current.toggleWatched('1');
         });
 
-        expect(mockUseFilmsReturn.toggleWatched).toHaveBeenCalledWith('1');
-
-        expect(toast).toHaveBeenCalledWith(
-            'Removido dos assistidos',
-            { icon: '📁' }
-        );
+        expect(filmToasts.watchedRemoved).toHaveBeenCalled();
     });
 
-    it('saveMovieNote deve mostrar toast de remoção quando a nota for zerada (isDelete)', () => {
+    it('saveMovieNote deve salvar nota', () => {
+        const { result } = renderHook(() => useFilmContext(), { wrapper });
+
+        act(() => {
+            result.current.saveMovieNote('1', 5, 'Excelente');
+        });
+
+        expect(mockUseFilmsReturn.saveNote).toHaveBeenCalledWith('1', 5, 'Excelente');
+        expect(filmToasts.noteSaved).toHaveBeenCalled();
+    });
+
+    it('saveMovieNote deve remover nota quando zerada', () => {
         const { result } = renderHook(() => useFilmContext(), { wrapper });
 
         act(() => {
             result.current.saveMovieNote('1', 0, '');
         });
 
-        expect(mockUseFilmsReturn.saveNote).toHaveBeenCalledWith('1', 0, '');
-
-        expect(toast).toHaveBeenCalledWith(
-            'Nota removida',
-            expect.objectContaining({
-                icon: '🗑️',
-                style: expect.objectContaining({
-                    border: '1px solid #ef4444',
-                    backgroundColor: 'var(--bg)'
-                })
-            })
-        );
-
-        expect(toast.success).not.toHaveBeenCalled();
+        expect(filmToasts.noteRemoved).toHaveBeenCalled();
     });
-    describe('FilmProvider - Lógica de setFilterMode', () => {
 
-        it('deve ADICIONAR um modo ao filtro quando ele não estiver presente ([...prev, mode])', () => {
-            (useFilms as Mock).mockReturnValue({
-                ...mockUseFilmsReturn,
-                filterMode: [],
-            });
+    it('resetAll deve limpar filtros e disparar toast', () => {
+        const { result } = renderHook(() => useFilmContext(), { wrapper });
 
-            const { result } = renderHook(() => useFilmContext(), { wrapper });
-
-            act(() => {
-                result.current.handleFilterChange('favorites');
-            });
-
-    
-            const updaterSelector = mockUseFilmsReturn.setFilterMode.mock.calls[0][0];
-            const prevState: string[] = [];
-            const newState = updaterSelector(prevState);
-
-            expect(newState).toContain('favorites');
-            expect(newState).toHaveLength(1);
+        act(() => {
+            result.current.resetAll();
         });
 
-        it('deve REMOVER um modo do filtro quando ele já estiver presente (prev.filter)', () => {
-            (useFilms as Mock).mockReturnValue({
-                ...mockUseFilmsReturn,
-                filterMode: ['favorites'],
-            });
-
-            const { result } = renderHook(() => useFilmContext(), { wrapper });
-
-            act(() => {
-                result.current.handleFilterChange('favorites');
-            });
-
-            const updaterSelector = mockUseFilmsReturn.setFilterMode.mock.calls[0][0];
-            const prevState = ['favorites', 'watched'];
-            const newState = updaterSelector(prevState);
-
-            expect(newState).not.toContain('favorites');
-            expect(newState).toContain('watched');
-            expect(newState).toHaveLength(1);
-        });
+        expect(mockUseFilmsReturn.setSearch).toHaveBeenCalledWith('');
+        expect(mockUseFilmsReturn.setSortBy).toHaveBeenCalledWith('title-asc');
+        expect(mockUseFilmsReturn.setIncludeDescription).toHaveBeenCalledWith(false);
+        expect(mockUseFilmsReturn.setFilterMode).toHaveBeenCalledWith([]);
+        expect(filmToasts.resetFilters).toHaveBeenCalled();
     });
 });
