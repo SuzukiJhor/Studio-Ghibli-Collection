@@ -43,6 +43,20 @@ export function FilmProvider({ children }: { children: ReactNode }) {
 
     const handleSaveNote = (id: string, rating: number, notes: string) => {
         filmsData.saveNote(id, rating, notes);
+        const isDelete = rating === 0 && notes.trim() === "";
+
+        if (isDelete) {
+            return toast('Nota removida', {
+                icon: '🗑️',
+                style: {
+                    border: '1px solid #ef4444',
+                    padding: '16px',
+                    color: 'var(--text)',
+                    backgroundColor: 'var(--bg)'
+                },
+            });
+        }
+
         toast.success('Avaliação salva com sucesso!', {
             style: { border: '1px solid #6366f1', padding: '16px', color: '#fff' },
             iconTheme: { primary: '#6366f1', secondary: '#fff' },

@@ -12,11 +12,12 @@ vi.mock('../../contexts/FilmContext', () => ({
 }));
 
 vi.mock('../../components/NoteModal', () => ({
-    NoteModal: ({ movieTitle, onClose, onSave }: any) => (
+    NoteModal: ({ movieTitle, onClose, onSave, onDelete }: any) => (
         <div data-testid="note-modal">
             <span>{movieTitle}</span>
             <button onClick={() => onSave(5, 'Ótimo filme')}>Salvar</button>
             <button onClick={onClose}>Fechar</button>
+            <button onClick={onDelete}>Excluir</button>
         </div>
     ),
 }));
@@ -242,5 +243,35 @@ describe('MovieCard component', () => {
         const highlighted = screen.getByText('mágico');
 
         expect(highlighted.tagName).toBe('MARK');
+    });
+
+    it('deve resetar a nota e fechar o modal ao chamar onDelete (handleDeleteNote)', () => {
+        const onSaveNoteSpy = vi.fn();
+
+        render(
+            <MovieCard
+                film={mockFilm}
+                isFavorite={false}
+                isWatched={false}
+                onFavorite={vi.fn()}
+                onWatched={vi.fn()}
+                onSaveNote={onSaveNoteSpy}
+                userData={{
+                    userRating: 4,
+                    notes: 'Nota existente',
+                    isFavorite: false,
+                    isWatched: false
+                }}
+            />
+        );
+
+        fireEvent.click(screen.getByTitle('Anotações'));
+
+        const deleteBtn = screen.getByText('Excluir');
+        fireEvent.click(deleteBtn);
+
+        expect(onSaveNoteSpy).toHaveBeenCalledWith(0, "");
+
+        expect(screen.queryByTestId('note-modal')).not.toBeInTheDocument();
     });
 });

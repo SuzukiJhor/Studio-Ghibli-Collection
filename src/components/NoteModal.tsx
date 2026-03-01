@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Star, X } from 'lucide-react';
+import { Star, Trash2, X } from 'lucide-react';
 import { createPortal } from 'react-dom';
 
 interface NoteModalProps {
@@ -8,6 +8,7 @@ interface NoteModalProps {
     initialNotes: string;
     onClose: () => void;
     onSave: (rating: number, notes: string) => void;
+    onDelete?: () => void;
 }
 
 export const NoteModal = ({
@@ -16,10 +17,14 @@ export const NoteModal = ({
     initialNotes,
     onClose,
     onSave,
+    onDelete,
 }: NoteModalProps) => {
     const [rating, setRating] = useState(initialRating);
     const [notes, setNotes] = useState(initialNotes);
     const [hover, setHover] = useState(0);
+
+    const hasExistingData = initialRating > 0 || initialNotes.trim().length > 0;
+    const isSaveDisabled = rating === 0 && notes.trim().length === 0;
 
     const modalContent = (
         <div
@@ -47,7 +52,6 @@ export const NoteModal = ({
                 }}
                 onClick={(e) => e.stopPropagation()}
             >
-                {/* Header */}
                 <div className="flex justify-between items-center mb-6">
                     <h2
                         className="text-xl font-bold tracking-tight"
@@ -61,9 +65,11 @@ export const NoteModal = ({
                                     'color-mix(in oklab, var(--accent) 75%, var(--text))',
                             }}
                         >
-                            para {movieTitle}
+                            Filme, {movieTitle}
                         </span>
                     </h2>
+
+
 
                     <button
                         onClick={onClose}
@@ -141,6 +147,7 @@ export const NoteModal = ({
                     </div>
 
                     <div className="space-y-3">
+
                         <label
                             className="text-xs font-bold uppercase tracking-widest"
                             style={{
@@ -171,6 +178,17 @@ export const NoteModal = ({
                         />
                     </div>
                 </div>
+                {hasExistingData && onDelete && (
+                    <button
+                        onClick={() => {
+                            onDelete();
+                        }}
+                        className="mr-auto p-2.5 rounded-xl transition-all hover:bg-red-500/10 text-red-500"
+                        title="Excluir notas"
+                    >
+                        <Trash2 size={20} />
+                    </button>
+                )}
 
                 <div className="flex justify-end gap-3 mt-8">
                     <button
@@ -185,19 +203,28 @@ export const NoteModal = ({
                     </button>
                     <button
                         onClick={() => onSave(rating, notes)}
-                        className="
-              px-8 py-2.5 rounded-xl text-sm font-bold
-              transition-all transform hover:-translate-y-0.5 active:translate-y-0
-            "
+                        disabled={isSaveDisabled} 
+                        className={`
+        px-8 py-2.5 rounded-xl text-sm font-bold
+        transition-all transform 
+        ${isSaveDisabled
+                                ? 'opacity-50 cursor-not-allowed scale-100' 
+                                : 'hover:-translate-y-0.5 active:translate-y-0'
+                            }
+    `}
                         style={{
-                            backgroundColor: 'var(--accent)',
-                            color: '#fff',
-                            boxShadow:
-                                '0 10px 25px color-mix(in oklab, var(--accent) 35%, transparent)',
+                            backgroundColor: isSaveDisabled
+                                ? 'color-mix(in oklab, var(--text) 20%, transparent)' 
+                                : 'var(--accent)',
+                            color: isSaveDisabled ? 'var(--text)' : '#fff',
+                            boxShadow: isSaveDisabled
+                                ? 'none'
+                                : '0 10px 25px color-mix(in oklab, var(--accent) 35%, transparent)',
                         }}
                     >
                         Salvar Notas
                     </button>
+
                 </div>
             </div>
         </div>

@@ -40,6 +40,11 @@ export const MovieCard = ({
             ? highlightText(textToDisplay, search)
             : textToDisplay;
 
+    const handleDeleteNote = () => {
+        onSaveNote(0, "");
+        setShowModal(false);
+    };
+
     return (
         <div
             className="group relative flex flex-col rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2"
@@ -264,6 +269,7 @@ export const MovieCard = ({
                         onSaveNote(rating, notes);
                         setShowModal(false);
                     }}
+                    onDelete={handleDeleteNote}
                 />
             )}
         </div>
