@@ -5,6 +5,7 @@ import { Header } from './components/Header';
 import { MovieList } from './components/MovieList';
 import { FilterBar } from './components/FilterBar';
 import { Pagination } from './components/Pagination';
+import { ThemeToggle } from './components/ThemeToggle';
 import { FilmProvider } from './provider/FilmProvider';
 import { useFilmContext } from './contexts/FilmContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -29,6 +30,7 @@ function AppContent() {
     return (
         <>
             <Header />
+            <ThemeToggle />
             <FilterBar onPageReset={() => setCurrentPage(1)} />
 
             <Pagination
@@ -53,17 +55,18 @@ export default function App() {
     return (
         <>
             <QueryClientProvider client={queryClient}>
-                <Toaster
-                    position="bottom-right"
-                    toastOptions={{
-                        style: {
-                            background: '#1e1e1e',
-                            color: '#fff',
-                            border: '1px solid rgba(255,255,255,0.1)',
-                        },
-                    }}
-                />
                 <FilmProvider>
+                    <Toaster
+                        position="bottom-right"
+                        toastOptions={{
+                            style: {
+                                background: '#1e1e1e',
+                                color: '#fff',
+                                border: '1px solid rgba(255,255,255,0.1)',
+                            },
+                        }}
+                    />
+
                     <AppContent />
                 </FilmProvider>
             </QueryClientProvider>
