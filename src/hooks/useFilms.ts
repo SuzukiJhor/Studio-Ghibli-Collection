@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
 import { useFetchFilms } from "./useFetchFilms";
 import { filmSorter } from "../utils/filmFilters";
-import type { FilterMode } from "../types/ghibli";
 import { useFilmStorage } from "./useFilmStorage";
+import type { Film, FilterMode } from "../types/ghibli";
 
 export function useFilms() {
     const { data: films = [], isLoading: loading, error } = useFetchFilms();
@@ -15,6 +15,10 @@ export function useFilms() {
 
     const filteredFilms = useMemo(() => {
         const term = search.toLowerCase();
+
+        const getSearchableDescription = (film: Film, term: string) => {
+            return (film.description.toLowerCase().includes(term) || film.descriptionTranslated?.toLowerCase().includes(term)) || '';
+        };
 
         return films
             .filter(film => {
@@ -30,7 +34,7 @@ export function useFilms() {
                 });
 
                 const matchesSearch = film.title.toLowerCase().includes(term) ||
-                    (includeDescription && film.description.toLowerCase().includes(term));
+                    (includeDescription && getSearchableDescription(film, term));
 
                 return matchesModes && matchesSearch;
             })
